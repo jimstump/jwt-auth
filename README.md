@@ -1,17 +1,10 @@
 # jwt-auth
 
-> JSON Web Token Authentication for Laravel
+> JSON Web Token Authentication for Laravel 4.x
 
-[![Build Status](http://img.shields.io/travis/tymondesigns/jwt-auth/master.svg?style=flat-square)](https://travis-ci.org/tymondesigns/jwt-auth)
-[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/tymondesigns/jwt-auth.svg?style=flat-square)](https://scrutinizer-ci.com/g/tymondesigns/jwt-auth/)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/tymondesigns/jwt-auth.svg?style=flat-square)](https://scrutinizer-ci.com/g/tymondesigns/jwt-auth/code-structure)
-[![StyleCI](https://styleci.io/repos/23680678/shield?style=flat-square)](https://styleci.io/repos/23680678)
-[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://www.opensource.org/licenses/MIT)
-[![Latest Version](http://img.shields.io/packagist/v/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)
-[![Total Downloads](https://img.shields.io/packagist/dt/tymon/jwt-auth.svg?style=flat-square)](https://packagist.org/packages/tymon/jwt-auth)
+This is a fork of [tymondesigns's excellent JSON Web Token Authentication library](https://github.com/tymondesigns/jwt-auth) for Laravel with the goal of fixing some bugs in the 0.4.x releases for Laravel 4.x.
 
-
-See the [WIKI](https://github.com/tymondesigns/jwt-auth/wiki) for documentation
+See the [original WIKI](https://github.com/tymondesigns/jwt-auth/wiki) for documentation.
 
 ## License
 
