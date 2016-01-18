@@ -10,6 +10,11 @@ class Blacklist
      * @var \Tymon\JWTAuth\Providers\Storage\StorageInterface
      */
     protected $storage;
+    
+    /**
+     * @var integer
+     */
+    protected $refreshTTL = 20160;
 
     /**
      * @param \Tymon\JWTAuth\Providers\Storage\StorageInterface  $storage
@@ -27,10 +32,10 @@ class Blacklist
      */
     public function add(Payload $payload)
     {
-        $exp = Utils::timestamp($payload['exp']);
+        $exp = Utils::timestamp($payload['exp'])->addMinutes($this->refreshTTL);
 
         // there is no need to add the token to the blacklist
-        // if the token has already expired
+        // if the token has already expired and is no longer refreshable
         if ($exp->isPast()) {
             return false;
         }
@@ -75,5 +80,17 @@ class Blacklist
         $this->storage->flush();
 
         return true;
+    }
+
+    /**
+     * Set the refresh ttl
+     *
+     * @param integer  $ttl
+     */
+    public function setRefreshTTL($ttl)
+    {
+        $this->refreshTTL = $ttl;
+
+        return $this;
     }
 }

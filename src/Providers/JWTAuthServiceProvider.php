@@ -219,7 +219,7 @@ class JWTAuthServiceProvider extends ServiceProvider
     protected function registerJWTBlacklist()
     {
         $this->app['tymon.jwt.blacklist'] = $this->app->share(function ($app) {
-            return new Blacklist($app['tymon.jwt.provider.storage']);
+            return with(new Blacklist($app['tymon.jwt.provider.storage']))->setRefreshTTL($this->config('refresh_ttl'));
         });
     }
 

@@ -20,6 +20,8 @@ class BlacklistTest extends \PHPUnit_Framework_TestCase
     {
         $this->storage = Mockery::mock('Tymon\JWTAuth\Providers\Storage\StorageInterface');
         $this->blacklist = new Blacklist($this->storage);
+        $this->refreshTTL = 20160;
+        $this->blacklist->setRefreshTTL($this->refreshTTL);
 
         $this->validator = Mockery::mock('Tymon\JWTAuth\Validators\PayloadValidator');
         $this->validator->shouldReceive('setRefreshFlow->check');
@@ -43,12 +45,29 @@ class BlacklistTest extends \PHPUnit_Framework_TestCase
         ];
         $payload = new Payload($claims, $this->validator);
 
-        $this->storage->shouldReceive('add')->with('foo', [], 61)->once();
+        $this->storage->shouldReceive('add')->with('foo', [], 61 + $this->refreshTTL)->once();
         $this->assertTrue($this->blacklist->add($payload));
     }
 
     /** @test */
-    public function it_should_return_false_when_adding_an_expired_token_to_the_blacklist()
+    public function it_should_return_false_when_adding_non_refreshable_expired_token_to_the_blacklist()
+    {
+        $claims = [
+            new Subject(1),
+            new Issuer('http://example.com'),
+            new Expiration(time() - 3600 - ($this->refreshTTL*60)),
+            new NotBefore(time()),
+            new IssuedAt(time()),
+            new JwtId('foo')
+        ];
+        $payload = new Payload($claims, $this->validator, true);
+
+        $this->storage->shouldReceive('add')->never();
+        $this->assertFalse($this->blacklist->add($payload));
+    }
+
+    /** @test */
+    public function it_should_add_a_refreshable_but_expired_token_to_the_blacklist()
     {
         $claims = [
             new Subject(1),
@@ -60,8 +79,8 @@ class BlacklistTest extends \PHPUnit_Framework_TestCase
         ];
         $payload = new Payload($claims, $this->validator, true);
 
-        $this->storage->shouldReceive('add')->never();
-        $this->assertFalse($this->blacklist->add($payload));
+        $this->storage->shouldReceive('add')->with('foo', [], -59 + $this->refreshTTL)->once();
+        $this->assertTrue($this->blacklist->add($payload));
     }
 
     /** @test */
