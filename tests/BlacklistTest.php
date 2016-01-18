@@ -43,8 +43,8 @@ class BlacklistTest extends \PHPUnit_Framework_TestCase
         ];
         $payload = new Payload($claims, $this->validator);
 
-        $this->storage->shouldReceive('add')->with('foo', [], 61);
-        $this->blacklist->add($payload);
+        $this->storage->shouldReceive('add')->with('foo', [], 61)->once();
+        $this->assertTrue($this->blacklist->add($payload));
     }
 
     /** @test */
@@ -101,7 +101,7 @@ class BlacklistTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_should_empty_the_blacklist()
     {
-        $this->storage->shouldReceive('flush');
+        $this->storage->shouldReceive('flush')->once();
         $this->assertTrue($this->blacklist->clear());
     }
 }
