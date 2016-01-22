@@ -18,7 +18,7 @@ class NamshiAdapter extends JWTProvider implements JWTInterface
     {
         parent::__construct($secret, $algo);
 
-        $this->jws = $driver ?: new JWS($algo);
+        $this->jws = $driver ?: new JWS(['typ' => 'JWT', 'alg' => $algo]);
     }
 
     /**
@@ -32,7 +32,7 @@ class NamshiAdapter extends JWTProvider implements JWTInterface
         try {
             $this->jws->setPayload($payload)->sign($this->secret);
 
-            return $this->jws->getTokenString();
+            return (string) $this->jws->getTokenString();
         } catch (Exception $e) {
             throw new JWTException('Could not create token: ' . $e->getMessage());
         }
@@ -48,7 +48,8 @@ class NamshiAdapter extends JWTProvider implements JWTInterface
     public function decode($token)
     {
         try {
-            $jws = JWS::load($token);
+            // let's never allow unsecure tokens
+            $jws = JWS::load($token, false);
         } catch (Exception $e) {
             throw new TokenInvalidException('Could not decode token: ' . $e->getMessage());
         }
@@ -57,6 +58,6 @@ class NamshiAdapter extends JWTProvider implements JWTInterface
             throw new TokenInvalidException('Token Signature could not be verified.');
         }
 
-        return $jws->getPayload();
+        return (array) $jws->getPayload();
     }
 }
